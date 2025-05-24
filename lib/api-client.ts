@@ -12,8 +12,16 @@ export interface ChatRequest {
 }
 
 export async function sendChatMessage(request: ChatRequest) {
+  const endpoint = `${API_BASE_URL}/api/chat`;
+  console.log(`🚀 Sending request to: ${endpoint}`);
+  console.log('📤 Request payload:', {
+    messages: request.messages,
+    language: request.language,
+    model: request.model
+  });
+
   try {
-    const response = await fetch(`${API_BASE_URL}/api/chat`, {
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -22,12 +30,28 @@ export async function sendChatMessage(request: ChatRequest) {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to send message');
+      const errorText = await response.text();
+      console.error('❌ API request failed:', {
+        status: response.status,
+        statusText: response.statusText,
+        endpoint,
+        error: errorText
+      });
+      throw new Error(`Failed to send message: ${response.status} ${response.statusText}`);
     }
 
-    return await response.json();
+    const data = await response.json();
+    console.log('✅ API request successful:', {
+      endpoint,
+      responseSize: JSON.stringify(data).length
+    });
+    return data;
   } catch (error) {
-    console.error('Error sending message:', error);
+    console.error('❌ Error in sendChatMessage:', {
+      endpoint,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
     throw error;
   }
 } 

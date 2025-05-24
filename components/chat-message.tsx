@@ -12,7 +12,10 @@ interface ChatMessageProps {
 }
 
 export function ChatMessage({ message, onPlayAudio, language }: ChatMessageProps) {
+  console.log("ChatMessage component received message:", message);
   const isUser = message.role === "user"
+  console.log("Message role:", message.role, "isUser:", isUser);
+  console.log("Message content:", message.content);
 
   const getUserLabel = () => {
     switch (language) {

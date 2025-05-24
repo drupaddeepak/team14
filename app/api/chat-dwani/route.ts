@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-
+import { env } from "@/env"
 export const maxDuration = 30
 
 export async function POST(req: NextRequest) {
@@ -11,8 +11,8 @@ export async function POST(req: NextRequest) {
     }
 
     // Use the environment variables as configured
-    const dwaniApiKey = process.env.DWANI_API_KEY
-    const dwaniApiBaseUrl = process.env.DWANI_API_BASE_URL
+    const dwaniApiKey = import.meta.env.DWANI_API_KEY
+    const dwaniApiBaseUrl = import.meta.env.DWANI_API_BASE_URL
 
     if (!dwaniApiBaseUrl) {
       return NextResponse.json({ error: "DWANI_API_BASE_URL not configured" }, { status: 500 })

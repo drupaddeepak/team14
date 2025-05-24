@@ -60,20 +60,28 @@ export default function SarathiAI() {
   }, [])
 
   const { messages, input, handleInputChange, handleSubmit, isLoading, setMessages } = useChat({
-    api: "/api/chat",
+    api: "http://localhost:5000/api/chat",
     body: {
       language: currentLanguage,
       model: dwaniLLMSettings.model,
     },
     onFinish: (message) => {
+      console.log("Chat response received:", message);
       // Convert response to speech
       if (ttsSettings.enabled && ttsSettings.autoPlay) {
+        console.log("TTS enabled, converting to speech:", message.content);
         handleTextToSpeech(message.content)
       }
       // Update chat session
+      console.log("Updating chat session with message:", message);
       updateChatSession(message)
     },
   })
+
+  // Add debug log for messages array
+  useEffect(() => {
+    console.log("Messages array updated:", messages);
+  }, [messages]);
 
   const createNewChat = () => {
     const newChatId = `chat-${Date.now()}`
@@ -312,6 +320,9 @@ export default function SarathiAI() {
         }
     }
   }
+
+  // Add debug log in the render section
+  console.log("Rendering messages:", messages);
 
   return (
     <div className="flex h-screen bg-orange-50">
